@@ -5,50 +5,34 @@ import keras
 from keras.applications import VGG16
 from keras import backend as K
 from keras.models import Model
-import sys
 import time
-import multiprocessing
 from termcolor import colored
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 model = keras.models.load_model('model/vlstm_92.h5')
 image_model = VGG16(include_top=True, weights='imagenet')  
 model.summary()  
-#We will use the output of the layer prior to the final
-# classification-layer which is named fc2. This is a fully-connected (or dense) layer.
 transfer_layer = image_model.get_layer('fc2')
 image_model_transfer = Model(inputs=image_model.input,outputs=transfer_layer.output)
 transfer_values_size = K.int_shape(transfer_layer.output)[1]
 
 # Frame size  
 img_size = 224
-
 img_size_touple = (img_size, img_size)
-
-# Number of channels (RGB)
 num_channels = 3
-
-# Flat frame size
 img_size_flat = img_size * img_size * num_channels
-
-# Number of classes for classification (Violence-No Violence)
 num_classes = 2
 
-# Number of files to train
 _num_files_train = 1
 
-# Number of frames per video
 _images_per_file = 20
 
-# Number of frames per training set
 _num_images_train = _num_files_train * _images_per_file
 
-# Video extension
 video_exts = ".avi"
 
 in_dir = "data"
 
-#url of video stream
-url = 'http://192.168.43.1:8080/video'
+url = './data/yes.avi'
 
 
 if __name__ == "__main__":
